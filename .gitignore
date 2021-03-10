@@ -446,3 +446,5 @@ appsettings*.json
 datingapp.db
 
 API/Data/Migrations/*
+
+ssl
