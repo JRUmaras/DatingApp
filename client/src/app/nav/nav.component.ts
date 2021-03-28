@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from '../_models/user';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+
+//import { ToastrService } from 'ngx-toastr';
 
 import { AccountService } from '../_services/account.service';
 
@@ -12,18 +14,27 @@ import { AccountService } from '../_services/account.service';
 export class NavComponent implements OnInit {
   model: any = {};
 
-  constructor(public accountService: AccountService) { }
+  @ViewChild('loginForm') loginForm: NgForm;
+
+  //constructor(public accountService: AccountService, private router: Router, private toastrService: ToastrService) { }
+  constructor(public accountService: AccountService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
   login() {
     this.accountService.login(this.model).subscribe(response => {
-      console.log(response);
-    }, error => console.log(error));
+      this.router.navigate(['/members']);
+    }, error => {
+      console.log(error);
+      //this.toastrService.error(error.error);
+    }, () => {
+      this.loginForm.resetForm();
+    });
   }
 
   logout() {
     this.accountService.logout();
+    this.router.navigate(['/']);
   }
 }
