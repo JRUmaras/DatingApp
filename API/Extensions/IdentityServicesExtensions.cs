@@ -8,7 +8,7 @@ namespace API.Extensions
 {
     public static class IdentityServicesExtensions
     {
-        public static IServiceCollection AddIdentityServices(this IServiceCollection services, ITokenKeyService tokenKeyService)
+        public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -18,7 +18,7 @@ namespace API.Extensions
                         ValidateIssuerSigningKey = true,
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        IssuerSigningKey = tokenKeyService.Key
+                        IssuerSigningKey = config.GetTokenKey()
                     };
                 });
 

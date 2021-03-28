@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services
@@ -12,9 +14,9 @@ namespace API.Services
     {
         private readonly SecurityKey _key;
 
-        public TokenService(ITokenKeyService tokenKeyService)
+        public TokenService(IConfiguration config)
         {
-            _key = tokenKeyService.Key;
+            _key = config.GetTokenKey();
         }
 
         public string CreateToken(AppUser appUser)

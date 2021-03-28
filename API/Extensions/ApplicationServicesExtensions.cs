@@ -9,10 +9,8 @@ namespace API.Extensions
 {
     public static class ApplicationServicesExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config, ITokenKeyService tokenKeyService)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddSingleton(tokenKeyService);
-
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddDbContext<DataContext>(options =>
@@ -23,4 +21,4 @@ namespace API.Extensions
             return services;
         }
     }
-}
+} 

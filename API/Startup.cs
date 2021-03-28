@@ -1,17 +1,9 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using API.Data;
 using API.Extensions;
-using API.Interfaces;
-using API.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 
 namespace API
 {
@@ -20,24 +12,20 @@ namespace API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            TokenKeyService = new TokenKeyService(Configuration["TokenKey"]);
         }
 
         public IConfiguration Configuration { get; }
 
-        public ITokenKeyService TokenKeyService { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplicationServices(Configuration, TokenKeyService);
+            services.AddApplicationServices(Configuration);
 
             services.AddControllers();
             
             services.AddCors();
 
-            services.AddIdentityServices(TokenKeyService);
+            services.AddIdentityServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
