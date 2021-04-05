@@ -16,7 +16,7 @@ export class NavComponent implements OnInit {
 
   @ViewChild('loginForm') loginForm: NgForm;
 
-  constructor(public accountService: AccountService, private router: Router, private toastrService: ToastrService) { }
+  constructor(public accountService: AccountService, private router: Router) { }
   //constructor(public accountService: AccountService, private router: Router) { }
 
   ngOnInit(): void {
@@ -25,10 +25,7 @@ export class NavComponent implements OnInit {
   login() {
     this.accountService.login(this.model).subscribe(response => {
       this.router.navigate(['/members']);
-    }, error => {
-      console.log(error);
-      this.toastrService.error(error.error);
-    }, () => {
+    }, error => {}, () => {
       this.loginForm.resetForm();
     });
   }

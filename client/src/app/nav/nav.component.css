@@ -1,3 +1,14 @@
 .dropdown-toggle, .dropdown-item {
     cursor: pointer;
 }
+
+.btn-login-custom {
+    border: solid var(--white) 2px; 
+    font-weight: bold;
+}
+
+.btn-login-custom:hover {
+    font-weight: bold;
+    color: var(--teal);
+    background-color: var(--white);
+}
