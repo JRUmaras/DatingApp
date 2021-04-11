@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// Used for testing error handling (Middleware on server side, interceptors on client side)
+    /// </summary>
     public class BuggyController : BaseApiController
     {
         private readonly DataContext _context;
