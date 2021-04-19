@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
@@ -19,7 +20,8 @@ const routes: Routes = [
    canActivate: [AuthorizationGuard],
    children: [
      { path: 'members', component: MemberListComponent },
-     { path: 'members/:id', component: MemberDetailComponent },
+     { path: 'members/id/:id', component: MemberDetailComponent },
+     { path: 'members/:username', component: MemberDetailComponent },
      { path: 'lists', component: ListsComponent },
      { path: 'messages', component: MessagesComponent }]
  },
