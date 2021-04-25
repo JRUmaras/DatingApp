@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
@@ -18,16 +18,21 @@ import { MembersService } from 'src/app/_services/members.service';
 export class MemberEditComponent implements OnInit {
 
     @ViewChild('editForm') editForm: NgForm;
+    @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any) {
+        if (this.stateUnsaved) {
+            $event.returnValue = true;
+        }
+    }
 
     member: Member;
     user: User;
 
-    get dataChanged() : boolean {
+    get stateUnsaved() : boolean {
         return this.editForm?.dirty ?? false;
     }
 
     get unsavedChangesWarningStyle() {
-        return { 'visibility': this.dataChanged ? 'visible' : 'hidden' }
+        return { 'visibility': this.stateUnsaved ? 'visible' : 'hidden' }
     }
 
     constructor(private accountService: AccountService, private memberServices: MembersService, private toastrService: ToastrService) { 
