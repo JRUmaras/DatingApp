@@ -4,8 +4,9 @@
             <h1>Your Profile</h1>
         </div>
         <div class="col-8">
-            <div class="alert alert-info">
-                <p><strong>Information: There are unsaved changes of your profile.</strong></p>
+            <!-- <div class="alert alert-info" [style.visibility]="editForm.dirty ? 'visible' : 'hidden'"> -->
+            <div class="alert alert-info" [ngStyle]="unsavedChangesWarningStyle">
+                <strong>Information: Your profile has unsaved changes.</strong>
             </div>
         </div>
     </div>
@@ -13,7 +14,7 @@
         <div class="col-4">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-success">Save</button>
+                    <button form="editForm" class="btn btn-success" [disabled]="!dataChanged">Save</button>
                 </div>
                 <img src="{{ member.photoUrl || './assets/user.png' }}" alt="{{ member.knownAs }}"
                     class="card-img-top img-thumbnail">
@@ -40,9 +41,9 @@
         <div class="col-8">
             <tabset class="member-tabset">
                 <tab heading="About {{ member.knownAs }}">
-                    <form>
+                    <form id="editForm" #editForm="ngForm" (ngSubmit)="updateMember()">
                         <h4 class="mt-4">Description</h4>
-                        <textarea [(ngModel)]="member.introduction" name="description" rows="6" class="form-control"></textarea>
+                        <textarea [(ngModel)]="member.introduction" name="introduction" rows="6" class="form-control"></textarea>
                         <h4 class="mt-4">Looking for</h4>
                         <textarea [(ngModel)]="member.lookingFor" name="lookingFor" rows="6" class="form-control"></textarea>
                         <h4 class="mt-4">Interests</h4>

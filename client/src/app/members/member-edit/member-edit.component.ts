@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
+
 import { Member } from 'src/app/_models/member';
 import { User } from 'src/app/_models/user';
+
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
 
@@ -12,10 +17,20 @@ import { MembersService } from 'src/app/_services/members.service';
 })
 export class MemberEditComponent implements OnInit {
 
+    @ViewChild('editForm') editForm: NgForm;
+
     member: Member;
     user: User;
 
-    constructor(private accountService: AccountService, private memberServices: MembersService) { 
+    get dataChanged() : boolean {
+        return this.editForm?.dirty ?? false;
+    }
+
+    get unsavedChangesWarningStyle() {
+        return { 'visibility': this.dataChanged ? 'visible' : 'hidden' }
+    }
+
+    constructor(private accountService: AccountService, private memberServices: MembersService, private toastrService: ToastrService) { 
         this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user)
     }
 
@@ -25,5 +40,11 @@ export class MemberEditComponent implements OnInit {
 
     loadMember() {
         this.memberServices.getMember(this.user.username).subscribe(member => this.member = member)
+    }
+
+    updateMember() {
+        console.log(this.member);
+        this.toastrService.success('Saved');
+        this.editForm.reset(this.member);
     }
 }
