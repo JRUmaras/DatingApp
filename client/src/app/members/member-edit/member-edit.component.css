@@ -1,0 +1,15 @@
+textarea {
+    resize: none;
+}
+
+.img-thumbnail {
+    margin: 25px;
+    width: 85%;
+    height: 85%;
+}
+
+.card-body {
+    padding: 10px 15 px;
+    background-color: white;
+    border-top: none;
+}
