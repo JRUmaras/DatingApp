@@ -1,25 +1,46 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
 import { Member } from '../_models/member';
+import { MembersCache } from '../_models/members-cache';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class MembersService {
 
     baseUrl = environment.apiUrl;
-    
+    readonly membersCache: MembersCache = new MembersCache();
+
     constructor(private http: HttpClient) { }
 
-    getMembers() : Observable<Member[]> {
-        return this.http.get<Member[]>(this.baseUrl + 'users');
+    getMembers(): Observable<Member[]> {
+        if (this.membersCache.hasValues) return of(this.membersCache.members);
+
+        return this.http.get<Member[]>(this.baseUrl + 'users').pipe(map((members: Member[]) => {
+            this.membersCache.members = members;
+            return members;
+        }));
     }
 
-    getMember(username: string) : Observable<Member> {
-        return this.http.get<Member>(this.baseUrl + 'users/' + username);
+    getMember(username: string): Observable<Member> {
+        if (this.membersCache.hasValues) 
+        {
+            const member = this.membersCache.getByUsername(username);
+            if (member !== undefined) return of(member);
+        }
+
+        return this.http.get<Member>(this.baseUrl + 'users/' + username).pipe(map((member: Member) => {
+            return member;
+        }));
+    }
+
+    updateMember(member: Member): Observable<Object> {
+        this.membersCache.save(member);
+        return this.http.put(this.baseUrl + 'users', member);
     }
 }

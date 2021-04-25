@@ -1,0 +1,35 @@
+textarea {
+    resize: none;
+}
+
+.img-thumbnail {
+    margin: 25px;
+    width: 85%;
+    height: 85%;
+}
+
+.card-body {
+    padding: 10px 15 px;
+    background-color: white;
+    border-top: none;
+}
+
+button.btn.btn-success {
+     animation: glow 2s ease-in infinite;
+}
+
+button.btn.btn-success:disabled {
+    background-color: grey ;
+    animation: none;
+    border-color: grey;
+    opacity: .3;
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--green);
+    }
+    50% {
+        box-shadow: 0 0 25px var(--green);
+    }
+}

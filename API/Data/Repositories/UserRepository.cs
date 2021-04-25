@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
@@ -32,28 +31,12 @@ namespace API.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<IEnumerable<AppUser>> GetUsersAsync()
-        {
-            return await _context.Users
-                .Include(user => user.Photos)
-                .ToListAsync();
-        }
-
-        public async Task<AppUser> GetUserByIdAsync(int id)
-        {
-            return await _context.Users
-                .Include(user => user.Photos)
-                .FirstOrDefaultAsync(user => user.Id == id);
-        }
-
-        public async Task<AppUser> GetUserByNameAsync(string username)
+        public async Task<AppUser> GetUserByUsernameAsync(string username)
         {
             return await _context.Users
                 .Include(user => user.Photos)
                 .SingleOrDefaultAsync(user => user.UserName == username);
         }
-
-        #region DTOs
 
         public async Task<IEnumerable<MemberDto>> GetMemberDtosAsync()
         {
@@ -70,7 +53,7 @@ namespace API.Data.Repositories
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<MemberDto> GetMemberDtoNameAsync(string username)
+        public async Task<MemberDto> GetMemberDtoByUsernameAsync(string username)
         {
             return await _context.Users
                 .Where(user => user.UserName == username)
@@ -78,6 +61,15 @@ namespace API.Data.Repositories
                 .SingleOrDefaultAsync();
         }
 
-        #endregion
+        public async Task<bool> UpdateUserByUsernameAsync(string username, MemberUpdateDto memberUpdateDto)
+        {
+            var appUser = await GetUserByUsernameAsync(username);
+
+            _mapper.Map(memberUpdateDto, appUser);
+
+            Update(appUser);
+
+            return await SaveAllAsync();
+        }
     }
 }
