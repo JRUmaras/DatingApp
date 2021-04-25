@@ -49,7 +49,7 @@ namespace API.Controllers
 
             var saveSuccess = await _userRepository.UpdateUserByUsernameAsync(username, memberUpdateDto);
 
-            if (!saveSuccess) return NoContent();
+            if (saveSuccess) return NoContent();
 
             return BadRequest("Failed to save the user.");
         }
