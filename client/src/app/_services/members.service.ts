@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { Member } from '../_models/member';
-import { MembersCache } from '../_models/members-cache';
+import { MembersCache } from '../_helpers/members-cache';
 
 @Injectable({
     providedIn: 'root'
