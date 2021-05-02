@@ -44,7 +44,7 @@ namespace API.Controllers
             return user;
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("{username}", Name = "GetUserByUsername")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             var user = await _userRepository.GetMemberDtoByUsernameAsync(username);
@@ -80,7 +80,10 @@ namespace API.Controllers
             };
 
             user.Photos.Add(photo);
-            if (await _userRepository.SaveAllAsync()) return _mapper.Map<PhotoDto>(photo);
+            if (await _userRepository.SaveAllAsync())
+            {
+                return CreatedAtRoute("GetUserByUsername", new { username = User.GetUsername() }, _mapper.Map<PhotoDto>(photo));
+            }
 
             return BadRequest("Unexpected photo upload error.");
         }
