@@ -21,3 +21,18 @@
 .animate {
     transition: all .25s ease-in-out;
 }
+
+img.img-thumbnail {
+    height: 100px;
+    min-width: 100px !important;
+    margin-bottom: 2px;
+}
+
+.nv-file-over {
+    background-color: var(--secondary);
+    color: var(--white);
+}
+
+input[type=file] {
+    color: transparent;
+}
