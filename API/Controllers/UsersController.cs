@@ -74,7 +74,7 @@ namespace API.Controllers
 
             var photo = new Photo
             {
-                Url = imageUploadResult.Url.AbsoluteUri,
+                Url = imageUploadResult.SecureUrl.AbsoluteUri,
                 IsMain = !user.Photos.Any(),
                 PublicId = imageUploadResult.PublicId
             };
