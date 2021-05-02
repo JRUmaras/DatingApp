@@ -14,6 +14,9 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
+            var tmp = config.GetSection(nameof(CloudinarySettings));
+            services.Configure<CloudinarySettings>(config.GetSection(nameof(CloudinarySettings)));
+
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddDbContext<DataContext>(options =>
