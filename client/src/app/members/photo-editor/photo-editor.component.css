@@ -1,0 +1,23 @@
+.photo-card {
+    position: relative;
+    text-align: center;
+}
+
+.photo-buttons {
+    position: absolute;
+    bottom: 0; 
+    width: 100%;
+    opacity: 0;
+}
+
+.photo-card:hover .photo-buttons {
+    opacity: 1;
+}
+
+.photo-button {
+    margin: 3px;
+}
+
+.animate {
+    transition: all .25s ease-in-out;
+}
