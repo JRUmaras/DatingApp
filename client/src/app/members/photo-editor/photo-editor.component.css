@@ -1,13 +1,14 @@
 .photo-card {
     position: relative;
+    border: solid lime dashed 2px;
     text-align: center;
 }
 
 .photo-buttons {
     position: absolute;
     bottom: 0; 
-    width: 100%;
     opacity: 0;
+    width: 100%;
 }
 
 .photo-card:hover .photo-buttons {
@@ -24,8 +25,7 @@
 
 img.img-thumbnail {
     height: 100px;
-    min-width: 100px !important;
-    margin-bottom: 2px;
+    object-fit: cover;
 }
 
 .nv-file-over {

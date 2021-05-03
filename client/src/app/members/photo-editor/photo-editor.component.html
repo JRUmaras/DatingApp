@@ -1,11 +1,15 @@
 <div class="row">
-    <div class="col-2 photo-card" *ngFor="let photo of member.photos">
-            <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail">
-            <div class="photo-buttons animate">
-                <button class="btn btn-sm btn-primary photo-button"><i class="fa fa-star"></i></button>
-                <button class="btn btn-sm btn-danger photo-button"><i class="fa fa-trash"></i></button>
+    <!-- <div class="col-2" *ngFor="let photo of member.photos"> -->
+        <div class="col-2" *ngFor="let photo of member.photos">
+            <div class="photo-card">
+                <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail">
+                <div class="photo-buttons animate">
+                    <button class="btn btn-sm btn-primary photo-button"><i class="fa fa-star"></i></button>
+                    <button class="btn btn-sm btn-danger photo-button"><i class="fa fa-trash"></i></button>
+                </div>
             </div>
-    </div>
+        </div>
+    <!-- </div> -->
 </div>
 
 <div class="mt-5">

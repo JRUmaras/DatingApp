@@ -4,6 +4,7 @@ import { take } from 'rxjs/operators';
 
 import { Member } from 'src/app/_models/member';
 import { User } from 'src/app/_models/user';
+import { Photo } from 'src/app/_models/photo';
 import { AccountService } from 'src/app/_services/account.service';
 import { environment } from 'src/environments/environment';
 
@@ -44,8 +45,6 @@ export class PhotoEditorComponent implements OnInit {
             autoUpload: false,
             maxFileSize: 10 * 1024 // 10 MB
         });
-
-        console.log(this.uploader);
 
         this.uploader.onAfterAddingFile = file => {
             file.withCredentials = false;
