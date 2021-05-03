@@ -21,10 +21,7 @@ export class AccountService {
     return this.httpClient.post(this.baseUrl + 'account/login', model).pipe(
       map((response: User) => {
         const user  = response;
-        if (user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUserSource.next(user);
-        }
+        this.loginUser(user);
       })
     );
   }
@@ -41,7 +38,7 @@ export class AccountService {
   register(model: any) {
     return this.httpClient.post(this.baseUrl + 'account/register', model).pipe(
       map((user: User) => {
-        this.loginUser(user)
+        this.loginUser(user);
         return user;
       })
     );

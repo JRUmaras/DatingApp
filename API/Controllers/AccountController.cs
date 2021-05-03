@@ -7,24 +7,24 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using API.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly DataContext _context;
-
         private readonly ITokenService _tokenService;
+        private readonly IUserRepository _userRepository;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(DataContext context, ITokenService tokenService, IUserRepository userRepository)
         {
-            _context = context;
             _tokenService = tokenService;
+            _userRepository = userRepository;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserTokenDto>> Register(UserRegistrationDto registrationDto)
+        public async Task<ActionResult<UserDto>> Register(UserRegistrationDto registrationDto)
         {
             if (await UsernameExistsInDb(registrationDto.Username)) return BadRequest("Username already exists.");
 
@@ -37,16 +37,16 @@ namespace API.Controllers
                 PasswordSalt = hmac.Key
             };
 
-            await _context.Users.AddAsync(newUser);
-            await _context.SaveChangesAsync();
+            _userRepository.AddUser(newUser);
+            await _userRepository.SaveAllAsync();
 
-            return CreateUserTokenDto(newUser);
+            return CreateUserDto(newUser);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserTokenDto>> Login(UserLoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(UserLoginDto loginDto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(usr => usr.UserName == loginDto.Username);
+            var user = await _userRepository.GetUserByUsernameAsync(loginDto.Username);
 
             if (user is null) return Unauthorized("Invalid username.");
 
@@ -56,15 +56,16 @@ namespace API.Controllers
 
             if (!computedHash.SequenceEqual(user.PasswordHash)) return Unauthorized("Invalid password.");
 
-            return CreateUserTokenDto(user);
+            return CreateUserDto(user);
         }
 
-        private async Task<bool> UsernameExistsInDb(string username) => await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
+        private async Task<bool> UsernameExistsInDb(string username) => await _userRepository.GetUserByUsernameAsync(username.ToLower()) is not null;
 
-        private UserTokenDto CreateUserTokenDto(AppUser user) => new()
+        private UserDto CreateUserDto(AppUser user) => new()
         {
             Username = user.UserName,
-            Token = _tokenService.CreateToken(user)
+            Token = _tokenService.CreateToken(user),
+            PhotoUrl = user.Photos?.FirstOrDefault(photo => photo.IsMain)?.Url ?? ""
         };
     }
 }

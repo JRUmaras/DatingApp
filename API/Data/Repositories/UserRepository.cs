@@ -21,6 +21,11 @@ namespace API.Data.Repositories
             _mapper = mapper;
         }
 
+        public void AddUser(AppUser user)
+        {
+            _context.Users.Add(user);
+        }
+
         public void Update(AppUser user)
         {
             _context.Entry(user).State = EntityState.Modified;
