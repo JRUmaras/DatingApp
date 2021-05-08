@@ -91,20 +91,11 @@ namespace API.Controllers
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+            var username = User.GetUsername();
 
-            var newMainPhoto =  user.Photos.FirstOrDefault(photo => photo.Id == photoId);
+            var success = await _userRepository.SetMainPhoto(username, photoId);
 
-            if (newMainPhoto is null) return NoContent();
-
-            var currentMainPhoto = user.Photos.FirstOrDefault(photo => photo.IsMain);
-
-            if (currentMainPhoto is not null) currentMainPhoto.IsMain = false;
-
-            newMainPhoto.IsMain = true;
-            if (await _userRepository.SaveAllAsync()) return NoContent();
-            
-            return BadRequest("Unexpected error encountered while setting the main photo");
+            return success ? NoContent() : BadRequest("Unexpected error encountered while setting the main photo");
         }
     }
 }

@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 
 import { Member } from '../_models/member';
 import { MembersCache } from '../_helpers/members-cache';
+import { Photo } from '../_models/photo';
 
 @Injectable({
     providedIn: 'root'
@@ -42,5 +43,9 @@ export class MembersService {
     updateMember(member: Member): Observable<Object> {
         this.membersCache.save(member);
         return this.http.put(this.baseUrl + 'users', member);
+    }
+
+    setMainPhotoForMember(photo: Photo) : Observable<object> {
+        return this.http.put(this.baseUrl + `users/set-main-photo/${photo.id}`, {});
     }
 }

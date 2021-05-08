@@ -22,5 +22,7 @@ namespace API.Interfaces.Repositories
         Task<IEnumerable<MemberDto>> GetMemberDtosAsync();
 
         Task<bool> UpdateUserByUsernameAsync(string username, MemberUpdateDto memberUpdateDto);
+
+        Task<bool> SetMainPhoto(string username, int newMainPhotoId);
     }
 }

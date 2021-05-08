@@ -1,7 +1,8 @@
 .photo-card {
     position: relative;
-    border: solid lime dashed 2px;
     text-align: center;
+    margin-top:10px;
+    border-radius: 10px;
 }
 
 .photo-buttons {
@@ -15,8 +16,18 @@
     opacity: 1;
 }
 
+.photo-card.photo-main {
+    box-shadow: 0 0 15px var(--secondary);
+}
+
 .photo-button {
     margin: 3px;
+}
+
+.photo-button.photo-button-main {
+    background-color: transparent;
+    color: gold;
+    opacity: .5;
 }
 
 .animate {
@@ -26,6 +37,10 @@
 img.img-thumbnail {
     height: 100px;
     object-fit: cover;
+}
+
+img.img-thumbnail.img-main {
+    border: solid 1px var(--secondary);
 }
 
 .nv-file-over {

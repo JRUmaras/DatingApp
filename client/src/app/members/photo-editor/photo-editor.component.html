@@ -1,10 +1,10 @@
 <div class="row">
     <!-- <div class="col-2" *ngFor="let photo of member.photos"> -->
         <div class="col-2" *ngFor="let photo of member.photos">
-            <div class="photo-card">
-                <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail">
+            <div class="photo-card" [ngClass]="{'photo-main': photo.isMain}">
+                <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail" [ngClass]="{'img-main': photo.isMain}">
                 <div class="photo-buttons animate">
-                    <button class="btn btn-sm btn-primary photo-button"><i class="fa fa-star"></i></button>
+                    <button class="btn btn-sm btn-primary photo-button" (click)="setMainPhoto(photo)" [disabled]="photo.isMain" [ngClass]="{'photo-button-main': photo.isMain}"><i class="fa fa-star"></i></button>
                     <button class="btn btn-sm btn-danger photo-button"><i class="fa fa-trash"></i></button>
                 </div>
             </div>
@@ -19,6 +19,7 @@
     </div>
 
     <div class="row mt-2">
+        
         <div class="col-md-3">
             <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropzoneOver}" (fileOver)="fileOverBase($event)"
                 [uploader]="uploader" class="card bg-faded p-3 text-center mb-3 my-drop-zone animate">
@@ -72,10 +73,8 @@
                     </tr>
                 </tbody>
             </table>
-
-
-
         </div>
 
     </div>
+
 </div>
