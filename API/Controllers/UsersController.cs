@@ -93,7 +93,7 @@ namespace API.Controllers
         {
             var username = User.GetUsername();
 
-            var success = await _userRepository.SetMainPhoto(username, photoId);
+            var success = await _userRepository.SetMainPhotoAsync(username, photoId);
 
             return success ? NoContent() : BadRequest("Unexpected error encountered while setting the main photo");
         }

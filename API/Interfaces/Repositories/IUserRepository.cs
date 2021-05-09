@@ -23,6 +23,6 @@ namespace API.Interfaces.Repositories
 
         Task<bool> UpdateUserByUsernameAsync(string username, MemberUpdateDto memberUpdateDto);
 
-        Task<bool> SetMainPhoto(string username, int newMainPhotoId);
+        Task<bool> SetMainPhotoAsync(string username, int newMainPhotoId);
     }
 }
