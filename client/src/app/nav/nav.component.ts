@@ -15,7 +15,6 @@ export class NavComponent implements OnInit {
   @ViewChild('loginForm') loginForm: NgForm;
 
   constructor(public accountService: AccountService, private router: Router) { }
-  //constructor(public accountService: AccountService, private router: Router) { }
 
   ngOnInit(): void {
   }

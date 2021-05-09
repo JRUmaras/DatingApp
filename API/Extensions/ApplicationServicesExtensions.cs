@@ -14,7 +14,12 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
+            services.Configure<CloudinarySettings>(config.GetSection(nameof(CloudinarySettings)));
+
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPhotoService, PhotoService>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddDbContext<DataContext>(options =>
             {
@@ -22,8 +27,6 @@ namespace API.Extensions
             });
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-
-            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

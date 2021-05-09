@@ -4,7 +4,6 @@
             <h1>Your Profile</h1>
         </div>
         <div class="col-8">
-            <!-- <div class="alert alert-info" [style.visibility]="editForm.dirty ? 'visible' : 'hidden'"> -->
             <div class="alert alert-info" [ngStyle]="unsavedChangesWarningStyle">
                 <strong>Information: Your profile has unsaved changes.</strong>
             </div>
@@ -40,7 +39,7 @@
         </div>
         <div class="col-8">
             <tabset class="member-tabset">
-                <tab heading="About {{ member.knownAs }}">
+                <tab heading="About">
                     <form id="editForm" #editForm="ngForm" (ngSubmit)="updateMember()">
                         <h4 class="mt-4">Description</h4>
                         <textarea [(ngModel)]="member.introduction" name="introduction" rows="6" class="form-control"></textarea>
@@ -58,7 +57,7 @@
                     </form>
                 </tab>
                 <tab heading="Photos">
-                    <h4>Photo edit will go here.</h4>
+                    <app-photo-editor [member]="member"></app-photo-editor>
                 </tab>
             </tabset>
         </div>

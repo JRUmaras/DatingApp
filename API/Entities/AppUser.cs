@@ -36,8 +36,5 @@ namespace API.Entities
 
 
         public ICollection<Photo> Photos { get; set; }
-
-
-        //public int GetAge() => DateOfBirth.CalculateAge();
     }
 }

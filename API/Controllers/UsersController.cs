@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
+using API.Entities;
+using API.Errors.Data.Repositories;
+using API.Extensions;
+using API.Interfaces;
 using API.Interfaces.Repositories;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -12,10 +20,14 @@ namespace API.Controllers
     public class UsersController : BaseApiController
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPhotoService _photoService;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository, IPhotoService photoService, IMapper mapper)
         {
             _userRepository = userRepository;
+            _photoService = photoService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -34,7 +46,7 @@ namespace API.Controllers
             return user;
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("{username}", Name = "GetUserByUsername")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             var user = await _userRepository.GetMemberDtoByUsernameAsync(username);
@@ -45,13 +57,43 @@ namespace API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
         {
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var saveSuccess = await _userRepository.UpdateUserByUsernameAsync(username, memberUpdateDto);
+            var saveSuccess = await _userRepository.UpdateUserByUsernameAsync(User.GetUsername(), memberUpdateDto);
 
             if (saveSuccess) return NoContent();
 
             return BadRequest("Failed to save the user.");
+        }
+
+        [HttpPost("add-photo")]
+        public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
+        {
+            var username = User.GetUsername();
+
+            var uploadedPhoto = await _userRepository.AddPhotoAsync(username, file);
+
+            var uploadedPhotoDto = _mapper.Map<PhotoDto>(uploadedPhoto);
+
+            return CreatedAtRoute("GetUserByUsername", new { username }, uploadedPhotoDto);
+        }
+
+        [HttpPut("set-main-photo/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int photoId)
+        {
+            var username = User.GetUsername();
+
+            var success = await _userRepository.SetMainPhotoAsync(username, photoId);
+
+            return success ? NoContent() : BadRequest("Unexpected error encountered while setting the main photo");
+        }
+
+        [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId)
+        {
+            var username = User.GetUsername();
+
+            var success = await _userRepository.DeletePhotoAsync(username, photoId);
+
+            return success ? NoContent() : BadRequest();
         }
     }
 }

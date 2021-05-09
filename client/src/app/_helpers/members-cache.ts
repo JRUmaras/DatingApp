@@ -1,4 +1,4 @@
-import { Member } from "./member";
+import { Member } from "../_models/member";
 
 export class MembersCache {
     private membersArray: Member[] = [];
@@ -10,7 +10,8 @@ export class MembersCache {
     }
 
     get members() : Member[] {
-        this.validate();
+        if (!this.isValid) return [];
+
         return this.membersArray.slice(0, this.membersArray.length);
     }
 
@@ -20,21 +21,26 @@ export class MembersCache {
     }
 
     get length() : number {
-        this.validate();
+        if (!this.isValid) return 0;
+
         return this.membersArray.length;
     }
 
     get hasValues() : boolean {
-        this.validate();
-        return this.length > 0;
+        if (!this.isValid) return false;
+
+        return this.membersArray.length > 0;
     }
 
     getByUsername(username: string) : Member {
-        this.validate();
+        if (!this.isValid) return undefined;
+
         return this.membersArray.find(member => member.username === username);
     }
 
     save(memberToSave: Member) {
+        if (!this.isValid) return;
+
         let wasUpdated = false;
         this.membersArray.forEach((member, index) => {
             if (member.id === memberToSave.id)
@@ -45,11 +51,12 @@ export class MembersCache {
         });
 
         if (wasUpdated) return;
+
         this.membersArray.push(memberToSave);
     }
 
-    private validate() {
-        if (this.isValid) return;
-        this.membersArray = [];
-    }
+    // private validate() {
+    //     if (this.isValid) return;
+    //     this.membersArray = [];
+    // }
 }

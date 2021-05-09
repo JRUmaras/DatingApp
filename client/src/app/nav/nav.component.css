@@ -12,3 +12,9 @@
     color: var(--teal);
     background-color: var(--white);
 }
+
+.img {
+    height: 50px;
+    border: 2px solid white;
+    display: inline;
+}
