@@ -93,7 +93,7 @@ namespace API.Controllers
 
             var success = await _userRepository.DeletePhotoAsync(username, photoId);
 
-            return success ? NoContent() : throw PhotoDeletionFailedException.UnknownIssueException();
+            return success ? NoContent() : BadRequest();
         }
     }
 }
