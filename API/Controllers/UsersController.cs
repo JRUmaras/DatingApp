@@ -7,7 +7,6 @@ using API.Extensions;
 using API.Interfaces;
 using API.Interfaces.Repositories;
 using AutoMapper;
-using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -63,29 +62,15 @@ namespace API.Controllers
         }
 
         [HttpPost("add-photo")]
-        // TODO: refactor the upload of photo, put the logic into the user repository or dedicated photo repo
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
-            var imageUploadResult = await _photoService.AddPhotoAsync(file);
+            var username = User.GetUsername();
 
-            if (imageUploadResult.Error is not null) return BadRequest(imageUploadResult.Error.Message);
+            var uploadedPhoto = await _userRepository.AddPhotoAsync(username, file);
 
-            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+            var uploadedPhotoDto = _mapper.Map<PhotoDto>(uploadedPhoto);
 
-            var photo = new Photo
-            {
-                Url = imageUploadResult.SecureUrl.AbsoluteUri,
-                IsMain = !user.Photos.Any(),
-                PublicId = imageUploadResult.PublicId
-            };
-
-            user.Photos.Add(photo);
-            if (await _userRepository.SaveAllAsync())
-            {
-                return CreatedAtRoute("GetUserByUsername", new { username = User.GetUsername() }, _mapper.Map<PhotoDto>(photo));
-            }
-
-            return BadRequest("Unexpected error encountered while uploading the photo(s)");
+            return CreatedAtRoute("GetUserByUsername", new { username }, uploadedPhotoDto);
         }
 
         [HttpPut("set-main-photo/{photoId}")]
