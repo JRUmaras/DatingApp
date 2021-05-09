@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,13 @@ namespace API.Data.Repositories
             _context = context;
             _mapper = mapper;
             _photoService = photoService;
+
+            var tmp = EF.CompileQuery((DataContext context, string username, int photoId) =>
+                context.Users
+                    .Where(user => user.UserName == username)
+                    .SelectMany(user => user.Photos)
+                    .Where(photo => photo.Id == photoId)
+            );
         }
 
         public void AddUser(AppUser user)
@@ -122,9 +130,20 @@ namespace API.Data.Repositories
             return wasSuccess && await SaveAllAsync();
         }
 
-        public async Task<bool> DeletePhotoAsync(string username, int newMainPhotoId)
+        public async Task<bool> DeletePhotoAsync(string username, int photoId)
         {
-            throw new System.NotImplementedException();
+            var photoToDelete = await _context.Users
+                .Where(user => user.UserName == username)
+                .SelectMany(user => user.Photos)
+                .FirstOrDefaultAsync(photo => photo.Id == photoId);
+
+            if (photoToDelete is null) throw PhotoDeletionFailedException.PhotoNotFoundException();
+
+            if (!string.IsNullOrEmpty(photoToDelete.PublicId)) await _photoService.DeletePhotoAsync(photoToDelete.PublicId);
+
+            _context.Entry(photoToDelete).State = EntityState.Deleted;
+
+            return await SaveAllAsync();
         }
     }
 }

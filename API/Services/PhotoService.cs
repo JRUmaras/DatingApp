@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using API.Errors.Data.Repositories;
 using API.Helpers;
 using API.Interfaces;
 using CloudinaryDotNet;
@@ -35,11 +36,13 @@ namespace API.Services
             return await _cloudinary.UploadAsync(uploadParams);
         }
 
-        public async Task<DeletionResult> DeletePhotoAsync(string publicId)
+        public async Task DeletePhotoAsync(string storageId)
         {
-            var deleteParams = new DeletionParams(publicId);
+            var deleteParams = new DeletionParams(storageId);
 
-            return await _cloudinary.DestroyAsync(deleteParams);
+            var deletionResult = await _cloudinary.DestroyAsync(deleteParams);
+
+            if (deletionResult.Error is not null) throw PhotoDeletionFailedException.DeletionInStorageFailedException(deletionResult.Error.Message);
         }
     }
 }

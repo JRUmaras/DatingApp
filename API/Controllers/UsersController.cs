@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Errors.Data.Repositories;
 using API.Extensions;
 using API.Interfaces;
 using API.Interfaces.Repositories;
@@ -81,6 +84,16 @@ namespace API.Controllers
             var success = await _userRepository.SetMainPhotoAsync(username, photoId);
 
             return success ? NoContent() : BadRequest("Unexpected error encountered while setting the main photo");
+        }
+
+        [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId)
+        {
+            var username = User.GetUsername();
+
+            var success = await _userRepository.DeletePhotoAsync(username, photoId);
+
+            return success ? NoContent() : throw PhotoDeletionFailedException.UnknownIssueException();
         }
     }
 }
