@@ -5,7 +5,7 @@
                 <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail" [ngClass]="{'img-main': photo.isMain}">
                 <div class="photo-buttons animate">
                     <button class="btn btn-sm btn-primary photo-button" (click)="setMainPhoto(photo)" [disabled]="photo.isMain" [ngClass]="{'photo-button-main': photo.isMain}"><i class="fa fa-star"></i></button>
-                    <button class="btn btn-sm btn-danger photo-button"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-sm btn-danger photo-button" (click)="deletePhoto(photo)"><i class="fa fa-trash"></i></button>
                 </div>
             </div>
         </div>

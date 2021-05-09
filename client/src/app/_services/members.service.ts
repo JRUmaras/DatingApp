@@ -40,12 +40,16 @@ export class MembersService {
         }));
     }
 
-    updateMember(member: Member): Observable<Object> {
+    updateMember(member: Member): Observable<object> {
         this.membersCache.save(member);
         return this.http.put(this.baseUrl + 'users', member);
     }
 
     setMainPhotoForMember(photo: Photo) : Observable<object> {
-        return this.http.put(this.baseUrl + `users/set-main-photo/${photo.id}`, {});
+        return this.http.put(`${this.baseUrl}users/set-main-photo/${photo.id}`, {});
+    }
+
+    deletePhoto(photo: Photo): Observable<object> {
+        return this.http.delete(`${this.baseUrl}users/delete-photo/${photo.id}`);
     }
 }
