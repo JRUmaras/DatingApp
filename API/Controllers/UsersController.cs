@@ -20,13 +20,11 @@ namespace API.Controllers
     public class UsersController : BaseApiController
     {
         private readonly IUserRepository _userRepository;
-        private readonly IPhotoService _photoService;
         private readonly IMapper _mapper;
 
-        public UsersController(IUserRepository userRepository, IPhotoService photoService, IMapper mapper)
+        public UsersController(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
-            _photoService = photoService;
             _mapper = mapper;
         }
 
