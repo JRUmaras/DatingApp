@@ -1,14 +1,21 @@
 input.ng-invalid.ng-touched {
-    border: 2px solid red;
+    border: 1px solid var(--danger);
+    background-color: rgba(255, 120, 81, 0.2);
+}
+
+button.btn.btn-success:disabled {
+    opacity: 0.1;
+    background-color: black;
+    border: 1px solid black;
 }
 
 button.btn.btn-cancel {
-    color: crimson;
-    border: 1px solid crimson;
+    color: var(--danger);
+    border: 1px solid var(--danger);
 }
 
 button.btn.btn-cancel:hover {
     color: white;
-    background-color: crimson;
+    background-color: var(--danger);
     border: 1px solid transparent;
 }
