@@ -1,3 +1,14 @@
 input.ng-invalid.ng-touched {
     border: 2px solid red;
 }
+
+button.btn.btn-cancel {
+    color: crimson;
+    border: 1px solid crimson;
+}
+
+button.btn.btn-cancel:hover {
+    color: white;
+    background-color: crimson;
+    border: 1px solid transparent;
+}

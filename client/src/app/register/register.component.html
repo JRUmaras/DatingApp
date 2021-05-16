@@ -1,14 +1,23 @@
-<form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
+<form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
     <h2 class="text-center text-primary">Sign-up</h2>
     <hr>
     <div class="form-group">
-        <input type="text" class="form-control" required name="username" [(ngModel)]="model.username" placeholder="Username">
+        <input type="text" class="form-control" required formControlName="username" placeholder="Username">
     </div>
     <div class="form-group">
-        <input type="password" class="form-control" required name="password" [(ngModel)]="model.password" placeholder="Password">
+        <input type="password" class="form-control" required formControlName="password" placeholder="Password">
+    </div>
+    <div class="form-group">
+        <input type="password" class="form-control" required formControlName="confirmPassword" placeholder="Retype to confirm the password">
     </div>
     <div class="form-group text-center">
         <button class="btn btn-success mr-2" type="submit" [disabled]="!registerForm.valid">Register</button>
-        <button class="btn btn-default mr-2" type="button" (click)="onCancelButtonClicked()" style="border: 2px solid black; color: black">Cancel</button>
+        <button class="btn btn-default mr-2 btn-cancel" type="button" (click)="onCancelButtonClicked()">Cancel</button>
     </div>
 </form>
+
+<p>
+    Form value: {{ registerForm.value | json }}
+    <br>
+    Form status: {{ registerForm.status | json }}
+</p>
