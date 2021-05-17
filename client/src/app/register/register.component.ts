@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validator, ValidatorFn, Validators } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
 
@@ -43,18 +43,22 @@ export class RegisterComponent implements OnInit {
         return this.registerForm?.controls['password']?.value ?? undefined;
     }
 
-    constructor(private accountService: AccountService, private toastrService: ToastrService) { }
+    constructor(private accountService: AccountService, private toastrService: ToastrService, private formBuilder: FormBuilder) { }
 
     ngOnInit(): void {
         this.initRegisterForm();
     }
 
     initRegisterForm() {
-        this.registerForm = new FormGroup({
-            username: new FormControl('', Validators.required),
-            password: new FormControl('', [Validators.required, Validators.minLength(this.minPasswordLength)]),
-            // confirmPassword: new FormControl('', [Validators.required, this.inputTextMatchValidatorByControl('password')])
-            confirmPassword: new FormControl('',[Validators.required, this.confirmPasswordCrossValidator(() => this.registerForm?.controls?.password)])
+        this.registerForm = this.formBuilder.group({
+            city: ['', Validators.required],
+            confirmPassword: ['',[Validators.required, this.confirmPasswordCrossValidator(() => this.registerForm?.controls?.password)]],
+            country: ['', Validators.required],
+            dateOfBirth: ['', Validators.required],
+            gender: ['male'],
+            knownAs: ['', Validators.required],
+            password: ['', [Validators.required, Validators.minLength(this.minPasswordLength)]],
+            username: ['', Validators.required],
         });
 
         // We need the following line because if we enter password, then a matching confirm password,
@@ -85,14 +89,6 @@ export class RegisterComponent implements OnInit {
     isFormControlInvalid(formControlName: string) : boolean {
         const usernameControl = this.registerForm.controls[formControlName];
         return usernameControl.invalid && usernameControl.touched;
-    }
-
-    inputTextMatchValidatorByControl(refControlName: string) : ValidatorFn {
-        return (control: FormControl) => {
-            return control?.value === this.registerForm?.controls[refControlName]?.value 
-                ? null 
-                : { IsMatch: true };
-        }
     }
 
     confirmPasswordCrossValidator(getPasswordAbstractControl: () => AbstractControl) {

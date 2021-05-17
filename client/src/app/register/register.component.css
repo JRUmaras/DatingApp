@@ -23,6 +23,6 @@ button.btn.btn-cancel:hover {
         box-shadow: 0 0 5px var(--green);
     }
     50% {
-        box-shadow: 0 0 25px var(--green);
+        box-shadow: 0 0 25px 10px var(--green);
     }
 }
