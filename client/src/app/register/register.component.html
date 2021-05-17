@@ -22,9 +22,9 @@
 
     <app-text-input [formControl]="registerForm.controls['knownAs']" placeholder="Known as..."
         [validatorsAndMessages]="validatorMessages"></app-text-input>
-    
-    <app-text-input [formControl]="registerForm.controls['dateOfBirth']" placeholder="Date of birth..."
-        [validatorsAndMessages]="validatorMessages"></app-text-input>
+
+    <app-date-input [formControl]="registerForm.controls['dateOfBirth']" placeholder="Date of birth..."
+        [validatorsAndMessages]="validatorMessages" [maxDate]="maxDate"></app-date-input>
 
     <div class="form-group">
         <label class="mr-3">Gender: </label>

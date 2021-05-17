@@ -13,7 +13,10 @@ import { TextInputComponent } from '../_forms/text-input/text-input.component';
     styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+    
     @Output() cancelRegistration = new EventEmitter();
+
+    readonly minPasswordLength = 5;
 
     registerForm: FormGroup;
 
@@ -25,7 +28,6 @@ export class RegisterComponent implements OnInit {
         'IsMatch': 'Must match a valid password'
     }
 
-    readonly minPasswordLength = 5;
 
     get isUsernameInvalid() : boolean {
         return this.isFormControlInvalid('username');
@@ -41,6 +43,12 @@ export class RegisterComponent implements OnInit {
 
     get password() : string {
         return this.registerForm?.controls['password']?.value ?? undefined;
+    }
+
+    get maxDate(): Date {
+        let date = new Date();
+        date.setFullYear(date.getFullYear() - 18);
+        return date;
     }
 
     constructor(private accountService: AccountService, private toastrService: ToastrService, private formBuilder: FormBuilder) { }

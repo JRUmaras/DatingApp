@@ -1,0 +1,12 @@
+<div class="form-group">
+    <input 
+        type="text" 
+        class="form-control"
+        [class.is-invalid]="isInvalid()"
+        [placeholder]="placeholder"
+        [formControl]="ngControl.control"
+        bsDatepicker
+        [bsConfig]="bsConfig"
+        [maxDate]="maxDate"
+        title="{{ tooltip }}">
+</div>
