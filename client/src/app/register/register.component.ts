@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 
 import { AccountService } from '../_services/account.service';
 
+import { TextInputComponent } from '../_forms/text-input/text-input.component';
+
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
@@ -16,6 +18,12 @@ export class RegisterComponent implements OnInit {
     registerForm: FormGroup;
 
     model: any = {}
+
+    validatorMessages = {
+        'required': 'Required',
+        'minlength': 'Too short',
+        'IsMatch': 'Must match a valid password'
+    }
 
     readonly minPasswordLength = 5;
 

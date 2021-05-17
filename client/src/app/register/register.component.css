@@ -1,12 +1,10 @@
-input.ng-invalid.ng-touched {
-    border: 1px solid var(--danger);
-    background-color: rgba(255, 120, 81, 0.2);
+button.btn.btn-success {
+    animation: glow 2s ease-in infinite;
 }
 
 button.btn.btn-success:disabled {
-    opacity: 0.1;
-    background-color: black;
-    border: 1px solid black;
+    opacity: 0.3;
+    animation: none;
 }
 
 button.btn.btn-cancel {
@@ -18,4 +16,13 @@ button.btn.btn-cancel:hover {
     color: white;
     background-color: var(--danger);
     border: 1px solid transparent;
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--green);
+    }
+    50% {
+        box-shadow: 0 0 25px var(--green);
+    }
 }

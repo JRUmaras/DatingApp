@@ -1,19 +1,29 @@
 <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
+
     <h2 class="text-center text-primary">Sign-up</h2>
     <hr>
-    <div class="form-group">
-        <input type="text" class="form-control" required formControlName="username" placeholder="Username..." [class.is-invalid]="isUsernameInvalid" title="{{ isUsernameInvalid ? 'Required' : undefined }}">
-    </div>
-    <div class="form-group">
-        <input type="password" class="form-control" required formControlName="password" placeholder="Password of at least {{minPasswordLength}} characters..." [class.is-invalid]="isPasswordInvalid" title="Minimum {{minPasswordLength}} characters" title="{{ isPasswordInvalid ? 'Minimum ' + minPasswordLength + ' characters' : undefined }}">
-    </div>
-    <div class="form-group">
-        <input type="password" class="form-control" required formControlName="confirmPassword" placeholder="Confirm the password..." [class.is-invalid]="isConfirmPasswordInvalid" title="{{ isConfirmPasswordInvalid ? 'Has to match a valid password' : undefined }}">
-    </div>
+    <app-text-input 
+        [formControl]="registerForm.controls['username']" 
+        placeholder="Username..." 
+        [validatorsAndMessages]="validatorMessages"></app-text-input>
+
+    <app-text-input 
+        [formControl]="registerForm.controls['password']" 
+        [type]="'password'"
+        placeholder="Password of at least {{minPasswordLength}} characters..." 
+        [validatorsAndMessages]="validatorMessages"></app-text-input>
+
+    <app-text-input 
+        [formControl]="registerForm.controls['confirmPassword']" 
+        [type]="'password'"
+        placeholder="Confirm the password..." 
+        [validatorsAndMessages]="validatorMessages"></app-text-input>
+
     <div class="form-group text-center">
-        <button class="btn btn-success mr-2" type="submit" [disabled]="!registerForm.valid">Register</button>
+        <button class="btn btn-success mr-2" type="submit" [disabled]="!registerForm.valid" title="{{ registerForm.invalid ? 'Please fill-out the form to register' : undefined }}">Register</button>
         <button class="btn btn-default mr-2 btn-cancel" type="button" (click)="onCancelButtonClicked()">Cancel</button>
     </div>
+
 </form>
 
 <p>
