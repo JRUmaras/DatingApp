@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
 
 import { AccountService } from '../_services/account.service';
 
-import { TextInputComponent } from '../_forms/text-input/text-input.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-register',
@@ -16,18 +16,19 @@ export class RegisterComponent implements OnInit {
     
     @Output() cancelRegistration = new EventEmitter();
 
-    readonly minPasswordLength = 5;
+    readonly minPasswordLength = 4;
+    readonly maxPasswordLength = 32;
 
     registerForm: FormGroup;
-
-    model: any = {}
 
     validatorMessages = {
         'required': 'Required',
         'minlength': 'Too short',
+        'maxlength': 'Too long',
         'IsMatch': 'Must match a valid password'
     }
 
+    validationErrors: string[] = [];
 
     get isUsernameInvalid() : boolean {
         return this.isFormControlInvalid('username');
@@ -51,7 +52,7 @@ export class RegisterComponent implements OnInit {
         return date;
     }
 
-    constructor(private accountService: AccountService, private toastrService: ToastrService, private formBuilder: FormBuilder) { }
+    constructor(private accountService: AccountService, private toastrService: ToastrService, private formBuilder: FormBuilder, private router: Router) { }
 
     ngOnInit(): void {
         this.initRegisterForm();
@@ -65,7 +66,7 @@ export class RegisterComponent implements OnInit {
             dateOfBirth: ['', Validators.required],
             gender: ['male'],
             knownAs: ['', Validators.required],
-            password: ['', [Validators.required, Validators.minLength(this.minPasswordLength)]],
+            password: ['', [Validators.required, Validators.minLength(this.minPasswordLength), Validators.maxLength(this.maxPasswordLength)]],
             username: ['', Validators.required],
         });
 
@@ -79,15 +80,11 @@ export class RegisterComponent implements OnInit {
     }
 
     register() {
-        console.log(this.registerForm.value);
-
-        // this.accountService.register(this.model).subscribe(response => {
-        //   console.log(response);
-        //   this.cancelRegistration.emit(false);
-        // }, error => {
-        //   console.log(error);
-        //   this.toastrService.error(error.error)
-        // });
+        this.accountService.register(this.registerForm.value).subscribe(_response => {
+          this.router.navigateByUrl('/members');
+        }, error => {
+          this.validationErrors = error;
+        });
     }
 
     onCancelButtonClicked() {

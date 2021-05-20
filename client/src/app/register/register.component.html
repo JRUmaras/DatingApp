@@ -1,4 +1,4 @@
-<form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
+<form [formGroup]="registerForm" (ngSubmit)="registerForm.valid && register()" autocomplete="off">
 
     <h2 class="text-center text-primary">Sign-up</h2>
     
@@ -10,7 +10,7 @@
         [validatorsAndMessages]="validatorMessages"></app-text-input>
 
     <app-text-input [formControl]="registerForm.controls['password']" [type]="'password'"
-        placeholder="Password of at least {{minPasswordLength}} characters..."
+        placeholder="Password..."
         [validatorsAndMessages]="validatorMessages"></app-text-input>
 
     <app-text-input [formControl]="registerForm.controls['confirmPassword']" [type]="'password'"
@@ -52,10 +52,10 @@
         <button class="btn btn-default mr-2 btn-cancel" type="button" (click)="onCancelButtonClicked()">Cancel</button>
     </div>
 
-</form>
+    <div class="row mt-3" *ngIf="validationErrors.length > 0">
+        <ul class="text-danger list-group">
+            <li *ngFor="let validationError of validationErrors" class="list-group-item">{{ validationError }}</li>
+        </ul>
+    </div>
 
-<p>
-    Form value: {{ registerForm.value | json }}
-    <br>
-    Form status: {{ registerForm.status | json }}
-</p>
+</form>
