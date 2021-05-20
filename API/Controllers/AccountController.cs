@@ -3,12 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using API.Interfaces.Repositories;
-using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -16,11 +15,13 @@ namespace API.Controllers
     {
         private readonly ITokenService _tokenService;
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public AccountController(DataContext context, ITokenService tokenService, IUserRepository userRepository)
+        public AccountController(ITokenService tokenService, IUserRepository userRepository, IMapper mapper)
         {
             _tokenService = tokenService;
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -28,14 +29,13 @@ namespace API.Controllers
         {
             if (await UsernameExistsInDb(registrationDto.Username)) return BadRequest("Username already exists.");
 
+            var newUser = _mapper.Map<AppUser>(registrationDto);
+
+            // TODO: move this to a "hashing service"
             using var hmac = new HMACSHA512();
 
-            var newUser = new AppUser
-            {
-                UserName = registrationDto.Username.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registrationDto.Password)),
-                PasswordSalt = hmac.Key
-            };
+            newUser.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registrationDto.Password));
+            newUser.PasswordSalt = hmac.Key;
 
             _userRepository.AddUser(newUser);
             await _userRepository.SaveAllAsync();
@@ -61,11 +61,12 @@ namespace API.Controllers
 
         private async Task<bool> UsernameExistsInDb(string username) => await _userRepository.GetUserByUsernameAsync(username.ToLower()) is not null;
 
-        private UserDto CreateUserDto(AppUser user) => new()
+        private UserDto CreateUserDto(AppUser user)
         {
-            Username = user.UserName,
-            Token = _tokenService.CreateToken(user),
-            PhotoUrl = user.Photos?.FirstOrDefault(photo => photo.IsMain)?.Url ?? ""
-        };
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Token = _tokenService.CreateToken(user);
+
+            return userDto;
+        }
     }
 }

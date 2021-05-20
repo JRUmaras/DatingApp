@@ -1,0 +1,10 @@
+<div class="form-group">
+    <input 
+        type={{type}}
+        class="form-control" 
+        required 
+        [formControl]="ngControl.control" 
+        placeholder={{placeholder}} 
+        [class.is-invalid]="isInvalid()" 
+        title="{{ tooltip }}">
+</div>

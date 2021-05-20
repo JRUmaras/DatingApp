@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { BsDropdownModule} from 'ngx-bootstrap/dropdown';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ToastrModule } from 'ngx-toastr';
 import { TabsModule } from 'ngx-bootstrap/tabs'
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
@@ -21,7 +22,8 @@ import { FileUploadModule } from 'ng2-file-upload';
     TabsModule.forRoot(),
     NgxGalleryModule,
     NgxSpinnerModule,
-    FileUploadModule
+    FileUploadModule,
+    BsDatepickerModule.forRoot() 
   ],
   exports: [
     BsDropdownModule,
@@ -29,7 +31,8 @@ import { FileUploadModule } from 'ng2-file-upload';
     TabsModule,
     NgxGalleryModule,
     NgxSpinnerModule,
-    FileUploadModule
+    FileUploadModule,
+    BsDatepickerModule
   ]
 })
 export class SharedModule { }
