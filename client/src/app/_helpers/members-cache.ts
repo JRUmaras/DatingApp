@@ -26,7 +26,7 @@ export class MembersCache {
         return this.membersArray.length;
     }
 
-    get hasValues() : boolean {
+    get hasValidValues() : boolean {
         if (!this.isValid) return false;
 
         return this.membersArray.length > 0;
