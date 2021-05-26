@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
 using API.Errors.Data.Repositories;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using API.Interfaces.Repositories;
 using AutoMapper;
@@ -49,11 +49,13 @@ namespace API.Data.Repositories
                 .SingleOrDefaultAsync(user => user.UserName == username);
         }
 
-        public async Task<IEnumerable<MemberDto>> GetMemberDtosAsync()
+        public async Task<PagedList<MemberDto>> GetMemberDtosAsync(UserSettings userSettings)
         {
-            return await _context.Users
+            var query = _context.Users
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .AsNoTracking();
+
+            return await PagedList<MemberDto>.CreateAsync(query, userSettings.PageNumber, userSettings.PageSize);
         }
 
         public async Task<MemberDto> GetMemberDtoByIdAsync(int id)

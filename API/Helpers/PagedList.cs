@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +28,7 @@ namespace API.Helpers
             TotalPages = (int) Math.Ceiling(totalCount / (double) pageSize);
         }
 
-        public static async  Task<PagedList<T>> CreateAsync(IQueryable<T> allItems, int pageNumber, int pageSize)
+        public static async Task<PagedList<T>> CreateAsync(IQueryable<T> allItems, int pageNumber, int pageSize)
         {
             var totalCount = await allItems.CountAsync();
             var items = await allItems

@@ -11,8 +11,13 @@ namespace API.Extensions
             const string paginationHeaderName = "Pagination";
 
             var paginationHeader = new PaginationHeader(pageNumber, pageSize, totalCount, totalPages);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
             
-            httpResponse.Headers.Add(paginationHeaderName, JsonSerializer.Serialize(paginationHeader));
+            httpResponse.Headers.Add(paginationHeaderName, JsonSerializer.Serialize(paginationHeader, options));
             httpResponse.Headers.Add("Access-Control-Expose-Headers", paginationHeaderName);
         }
     }
