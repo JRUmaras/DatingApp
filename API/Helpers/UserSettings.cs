@@ -16,5 +16,9 @@ namespace API.Helpers
             get => _pageSize;
             set => _pageSize = Math.Min(_maxPageSize, value);
         }
+
+        public string CurrenUsername { get; set; }
+
+        public string Gender { get; set; }
     }
 }
