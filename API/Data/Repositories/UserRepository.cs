@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
@@ -51,13 +52,15 @@ namespace API.Data.Repositories
 
         public async Task<PagedList<MemberDto>> GetMemberDtosAsync(UserSettings userSettings)
         {
-            var query = _context.Users
-                .Where(appUser => appUser.UserName != userSettings.CurrenUsername)
-                .Where(appUser => appUser.Gender == userSettings.Gender)
+            var query = _context.Users.AsQueryable();
+
+            query = ApplyFilters(query, userSettings);
+
+            var queryDto = query
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
 
-            return await PagedList<MemberDto>.CreateAsync(query, userSettings.PageNumber, userSettings.PageSize);
+            return await PagedList<MemberDto>.CreateAsync(queryDto, userSettings.PageNumber, userSettings.PageSize);
         }
 
         public async Task<MemberDto> GetMemberDtoByIdAsync(int id)
@@ -141,6 +144,15 @@ namespace API.Data.Repositories
             _context.Entry(photoToDelete).State = EntityState.Deleted;
 
             return await SaveAllAsync();
+        }
+
+        private IQueryable<AppUser> ApplyFilters(IQueryable<AppUser> queryable, UserSettings userSettings)
+        {
+            return queryable
+                .Where(appUser => appUser.UserName != userSettings.CurrentUsername)
+                .Where(appUser => appUser.Gender == userSettings.Gender)
+                .Where(appUser => appUser.DateOfBirth <= DateTime.Today.AddYears(-userSettings.MinAge))
+                .Where(appUser => appUser.DateOfBirth > DateTime.Today.AddYears(-userSettings.MaxAge - 1));
         }
     }
 }
