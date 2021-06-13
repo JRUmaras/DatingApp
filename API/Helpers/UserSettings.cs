@@ -1,4 +1,5 @@
 ﻿using System;
+using API.Enums;
 
 namespace API.Helpers
 {
@@ -26,5 +27,7 @@ namespace API.Helpers
         
         // TODO: Move the age into the settings
         public int MaxAge { get; set; } = 200;
+
+        public MembersSortOptionsEnum OrderBy { get; set; } = MembersSortOptionsEnum.None;
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Enums;
 using API.Errors.Data.Repositories;
 using API.Extensions;
 using API.Helpers;
@@ -55,6 +56,13 @@ namespace API.Data.Repositories
             var query = _context.Users.AsQueryable();
 
             query = ApplyFilters(query, userSettings);
+
+            query = userSettings.OrderBy switch
+            {
+                MembersSortOptionsEnum.Created => query.OrderByDescending(appUser => appUser.Created),
+                MembersSortOptionsEnum.LastActive => query.OrderByDescending(appUser => appUser.LastActive),
+                _ => query
+            };
 
             var queryDto = query
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
@@ -146,7 +154,7 @@ namespace API.Data.Repositories
             return await SaveAllAsync();
         }
 
-        private IQueryable<AppUser> ApplyFilters(IQueryable<AppUser> queryable, UserSettings userSettings)
+        private static IQueryable<AppUser> ApplyFilters(IQueryable<AppUser> queryable, UserSettings userSettings)
         {
             return queryable
                 .Where(appUser => appUser.UserName != userSettings.CurrentUsername)
