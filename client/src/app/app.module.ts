@@ -28,6 +28,7 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { DateInputComponent } from './_forms/date-input/date-input.component';
+import { MembersFilterComponent } from './members/members-filter/members-filter.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { DateInputComponent } from './_forms/date-input/date-input.component';
     MemberEditComponent,
     PhotoEditorComponent,
     TextInputComponent,
-    DateInputComponent
+    DateInputComponent,
+    MembersFilterComponent
   ],
   imports: [
     BrowserModule,

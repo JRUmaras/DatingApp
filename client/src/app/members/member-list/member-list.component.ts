@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { IPagination } from 'src/app/_helpers/pagination';
 
 import { Member } from 'src/app/_models/member';
+import { User } from 'src/app/_models/user';
+import { UserParams } from 'src/app/_models/userParams';
+import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
 
 @Component({
@@ -16,10 +20,27 @@ export class MemberListComponent implements OnInit {
 
     members: Member[];
     pagination: IPagination;
-    pageNumber = 1;
-    pageSize = 5;
+    userParams: UserParams;
+    user: User;
 
-    constructor(private membersService: MembersService) { }
+    get numberOfMatches() {
+        return this.pagination?.totalCount ?? 0;
+    }
+
+    constructor(private membersService: MembersService, private accountService: AccountService) {
+        this.accountService.currentUser$
+            .pipe(take(1))
+            .subscribe(user => {
+                this.user = user;
+                this.userParams = new UserParams(user);
+               this.pagination = {
+                pageNumber: this.userParams.pageNumber,
+                pageSize: this.userParams.pageSize,
+                totalCount: 0,
+                totalPages: 1
+               } 
+            });
+     }
 
     ngOnInit(): void {
         //this.members$ = this.membersService.getMembers();
@@ -27,16 +48,20 @@ export class MemberListComponent implements OnInit {
     }
 
     loadMembers() {
-        this.membersService.getMembers(this.pageNumber, this.pageSize)
+        this.membersService.getMembers(this.userParams)
             .subscribe(paginatedMembers => {
-                console.log(paginatedMembers);
                 this.members = paginatedMembers.items;
                 this.pagination = paginatedMembers.pagination;
             });
     }
 
-    pageChanged($event: any) {
-        this.pageNumber = $event.page;
+    resetFilters() {
+        this.userParams = new UserParams(this.user);
+        this.loadMembers();
+    }
+
+    pageChanged(event: any) {
+        this.userParams.pageNumber = event.page;
         this.loadMembers();
     }
 }

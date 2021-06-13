@@ -1,0 +1,21 @@
+<div class="container mt-3">
+    <form #form="ngForm" class="form-inline mb-3" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="form-group">
+            <label>Age from</label>
+            <input type="number" class="form-control ml-1" style="width: 70px;" name="minAge" [(ngModel)]="userParams.minAge">
+        </div>
+        <div class="form-group px-2">
+            <label> to </label>
+            <input type="number" class="form-control ml-1" style="width: 70px;" name="maxAge" [(ngModel)]="userParams.maxAge">
+        </div>
+        <div class="form-group px-2">
+            <label for="">Gender</label>
+            <select name="gender" style="width: 130px;" class="form-control ml-1" [(ngModel)]="userParams.gender">
+                <option *ngFor="let gender of genderList" [value]="gender.value">{{ gender.display }}</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary ml-1" type="submit">Search</button>
+        <button class="btn btn-info ml-1" (click)="resetFilters()">Clear</button>
+    </form>
+</div>
