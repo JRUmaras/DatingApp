@@ -24,7 +24,7 @@ namespace API.Helpers
             var identity = resultContext.HttpContext.User.Identity;
             if (identity is null || !identity.IsAuthenticated) return;
 
-            var username = resultContext.HttpContext.User.GetUsername();
+            var userId = resultContext.HttpContext.User.GetUserId();
             var userRepo = resultContext.HttpContext.RequestServices.GetService<IUserRepository>();
             if (userRepo is null)
             {
@@ -32,7 +32,7 @@ namespace API.Helpers
                 return;
             }
 
-            var user = await userRepo.GetUserByUsernameAsync(username);
+            var user = await userRepo.GetUserByIdAsync(userId);
             user.LastActive = DateTime.UtcNow;
             await userRepo.SaveAllAsync();
         }

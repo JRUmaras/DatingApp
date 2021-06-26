@@ -14,6 +14,8 @@ namespace API.Interfaces.Repositories
 
         Task<bool> SaveAllAsync();
 
+        Task<AppUser> GetUserByIdAsync(int id);
+
         Task<AppUser> GetUserByUsernameAsync(string username);
 
         Task<MemberDto> GetMemberDtoByUsernameAsync(string username);
