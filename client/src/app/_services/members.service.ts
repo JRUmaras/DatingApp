@@ -5,7 +5,7 @@ import { map, min } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
-import { Member } from '../_models/member';
+import { IMember } from '../_models/member';
 import { MembersCache } from '../_helpers/members-cache';
 import { PaginatedItems } from '../_helpers/pagination';
 import { Photo } from '../_models/photo';
@@ -21,7 +21,7 @@ export class MembersService {
 
     constructor(private http: HttpClient) { }
 
-    getMembers(userParams: UserParams): Observable<PaginatedItems<Member[]>> {
+    getMembers(userParams: UserParams): Observable<PaginatedItems<IMember[]>> {
         //if (this.membersCache.hasValidValues) return of(this.membersCache.members);
 
         // return this.http.get<Member[]>(this.baseUrl + 'users').pipe(map((members: Member[]) => {
@@ -36,7 +36,7 @@ export class MembersService {
         params = params.append('gender', userParams.gender.toString());
         params = params.append('orderBy', userParams.orderBy);
 
-        return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params);
+        return this.getPaginatedResult<IMember[]>(this.baseUrl + 'users', params);
     }
 
     private getPaginatedResult<T>(url: string, params: HttpParams): Observable<PaginatedItems<T>> {
@@ -55,19 +55,19 @@ export class MembersService {
             }));
     }
 
-    getMember(username: string): Observable<Member> {
+    getMember(username: string): Observable<IMember> {
         if (this.membersCache.hasValidValues) 
         {
             const member = this.membersCache.getByUsername(username);
             if (member !== undefined) return of(member);
         }
 
-        return this.http.get<Member>(this.baseUrl + 'users/' + username).pipe(map((member: Member) => {
+        return this.http.get<IMember>(this.baseUrl + 'users/' + username).pipe(map((member: IMember) => {
             return member;
         }));
     }
 
-    updateMember(member: Member): Observable<object> {
+    updateMember(member: IMember): Observable<object> {
         this.membersCache.save(member);
         return this.http.put(this.baseUrl + 'users', member);
     }

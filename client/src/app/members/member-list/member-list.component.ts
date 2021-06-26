@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { IPagination } from 'src/app/_helpers/pagination';
 
-import { Member } from 'src/app/_models/member';
+import { IMember } from 'src/app/_models/member';
 import { User } from 'src/app/_models/user';
 import { UserParams } from 'src/app/_models/userParams';
 import { AccountService } from 'src/app/_services/account.service';
@@ -18,7 +18,7 @@ export class MemberListComponent implements OnInit {
 
     //members$: Observable<Member[]>;
 
-    members: Member[];
+    members: IMember[];
     pagination: IPagination;
     userParams: UserParams;
     user: User;

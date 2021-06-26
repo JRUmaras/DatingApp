@@ -1,7 +1,7 @@
-import { Member } from "../_models/member";
+import { IMember } from "../_models/member";
 
 export class MembersCache {
-    private membersArray: Member[] = [];
+    private membersArray: IMember[] = [];
     private cachedAt: number = Date.now();
     private expirationTermInMilliseconds: number = 5 * 60 * 1000;
 
@@ -9,13 +9,13 @@ export class MembersCache {
         return Date.now() - this.cachedAt < this.expirationTermInMilliseconds;
     }
 
-    get members() : Member[] {
+    get members() : IMember[] {
         if (!this.isValid) return [];
 
         return this.membersArray.slice(0, this.membersArray.length);
     }
 
-    set members(membersInput: Member[]) {
+    set members(membersInput: IMember[]) {
         this.membersArray = membersInput.slice(0, membersInput.length);
         this.cachedAt = Date.now();
     }
@@ -32,13 +32,13 @@ export class MembersCache {
         return this.membersArray.length > 0;
     }
 
-    getByUsername(username: string) : Member {
+    getByUsername(username: string) : IMember {
         if (!this.isValid) return undefined;
 
         return this.membersArray.find(member => member.username === username);
     }
 
-    save(memberToSave: Member) {
+    save(memberToSave: IMember) {
         if (!this.isValid) return;
 
         let wasUpdated = false;
