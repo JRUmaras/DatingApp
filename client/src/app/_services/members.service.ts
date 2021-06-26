@@ -34,6 +34,7 @@ export class MembersService {
         params = this.appendPaginationParams(params, userParams.pageNumber, userParams.pageSize);
         params = this.appendAgePreferenceParams(params, userParams.minAge, userParams.maxAge);
         params = params.append('gender', userParams.gender.toString());
+        params = params.append('orderBy', userParams.orderBy);
 
         return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params);
     }

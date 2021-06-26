@@ -4,4 +4,5 @@ export interface IUserParams {
     maxAge: number;
     pageNumber: number;
     pageSize: number;
+    orderBy: string;
 }
