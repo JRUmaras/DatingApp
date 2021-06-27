@@ -7,11 +7,12 @@ import { environment } from 'src/environments/environment';
 
 import { IMember } from '../_models/member';
 import { MembersCache } from '../_helpers/members-cache';
-import { PaginatedItems } from '../_helpers/pagination';
+import { IPagination, PaginatedItems } from '../_helpers/pagination';
 import { Photo } from '../_models/photo';
 import { UserParams } from '../_models/userParams';
 import { PaginatedMembersCache } from '../_helpers/paginated-members-cache';
 import { AccountService } from './account.service';
+import { User } from '../_models/user';
 
 @Injectable({
     providedIn: 'root'
@@ -19,10 +20,34 @@ import { AccountService } from './account.service';
 export class MembersService {
 
     baseUrl = environment.apiUrl;
-    readonly membersCache: MembersCache = new MembersCache();
-    readonly membersCache2: PaginatedMembersCache = new PaginatedMembersCache();
 
-    constructor(private http: HttpClient, private accountService: AccountService) { }
+    private user: User;
+    private _userParams: UserParams;
+
+    readonly membersCache: MembersCache = new MembersCache();
+    readonly paginatedMembersCache: PaginatedMembersCache = new PaginatedMembersCache();
+
+    constructor(private http: HttpClient, private accountService: AccountService) { 
+        this.accountService.currentUser$
+            .pipe(take(1))
+            .subscribe(user => {
+                this.user = user;
+                this.userParams = new UserParams(user);
+            });
+    }
+
+    public get userParams() {
+        return this._userParams;
+    }
+
+    public set userParams(value: UserParams) {
+        this._userParams = value;
+    }
+
+    resetUserParams() : UserParams {
+        this.userParams = new UserParams(this.user);
+        return this.userParams;
+    }
 
     getMembers(userParams: UserParams): Observable<PaginatedItems<IMember[]>> {
         //if (this.membersCache.hasValidValues) return of(this.membersCache.members);
@@ -33,8 +58,7 @@ export class MembersService {
         // }));
 
         const queryKey = Object.values(userParams).join('-');
-        const members = this.membersCache2.getQuery(queryKey);
-        console.log(members);
+        const members = this.paginatedMembersCache.getQuery(queryKey);
         if (members !== null) return of(members);
 
         let params = new HttpParams();
@@ -46,13 +70,13 @@ export class MembersService {
 
         return this.getPaginatedResult<IMember[]>(this.baseUrl + 'users', params)
             .pipe(map((paginatedMembers: PaginatedItems<IMember[]>) => {
-                this.membersCache2.save(paginatedMembers.items, queryKey, paginatedMembers.pagination);
+                this.paginatedMembersCache.save(paginatedMembers.items, queryKey, paginatedMembers.pagination);
                 return paginatedMembers;
             }));
     }
 
     getMember(username: string): Observable<IMember> {
-        let member = this.membersCache2.getByUsername(username);
+        let member = this.paginatedMembersCache.getByUsername(username);
         if (member !== null) return of(member);
 
         // if (this.membersCache.hasValidValues) 
@@ -69,19 +93,19 @@ export class MembersService {
 
     updateMember(member: IMember): Observable<object> {
         // this.membersCache.save(member);
-        this.membersCache2.save([member]);
+        this.paginatedMembersCache.save([member]);
 
         return this.http.put(this.baseUrl + 'users', member);
     }
 
     setMainPhotoForMember(photo: Photo) : Observable<object> {
-        this.membersCache2.invalidate();
+        this.paginatedMembersCache.invalidate();
         return this.http.put(`${this.baseUrl}users/set-main-photo/${photo.id}`, {});
     }
 
     deletePhoto(photo: Photo): Observable<object> {
         //this.accountService.currentUser$.pipe(take(1)).subscribe(user => user.)
-        this.membersCache2.invalidate();
+        this.paginatedMembersCache.invalidate();
         return this.http.delete(`${this.baseUrl}users/delete-photo/${photo.id}`);
     }
 
