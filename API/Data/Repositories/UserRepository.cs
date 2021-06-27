@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Enums;
 using API.Errors.Data.Repositories;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using API.Interfaces.Repositories;
 using AutoMapper;
@@ -42,6 +44,11 @@ namespace API.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<AppUser> GetUserByIdAsync(int id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
+
         public async Task<AppUser> GetUserByUsernameAsync(string username)
         {
             return await _context.Users
@@ -49,11 +56,24 @@ namespace API.Data.Repositories
                 .SingleOrDefaultAsync(user => user.UserName == username);
         }
 
-        public async Task<IEnumerable<MemberDto>> GetMemberDtosAsync()
+        public async Task<PagedList<MemberDto>> GetMemberDtosAsync(UserSettings userSettings)
         {
-            return await _context.Users
+            var query = _context.Users.AsQueryable();
+
+            query = ApplyFilters(query, userSettings);
+
+            query = userSettings.OrderBy switch
+            {
+                MembersSortOptionsEnum.Created => query.OrderByDescending(appUser => appUser.Created),
+                MembersSortOptionsEnum.LastActive => query.OrderByDescending(appUser => appUser.LastActive),
+                _ => query
+            };
+
+            var queryDto = query
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .AsNoTracking();
+
+            return await PagedList<MemberDto>.CreateAsync(queryDto, userSettings.PageNumber, userSettings.PageSize);
         }
 
         public async Task<MemberDto> GetMemberDtoByIdAsync(int id)
@@ -137,6 +157,15 @@ namespace API.Data.Repositories
             _context.Entry(photoToDelete).State = EntityState.Deleted;
 
             return await SaveAllAsync();
+        }
+
+        private static IQueryable<AppUser> ApplyFilters(IQueryable<AppUser> queryable, UserSettings userSettings)
+        {
+            return queryable
+                .Where(appUser => appUser.UserName != userSettings.CurrentUsername)
+                .Where(appUser => appUser.Gender == userSettings.Gender)
+                .Where(appUser => appUser.DateOfBirth <= DateTime.Today.AddYears(-userSettings.MinAge))
+                .Where(appUser => appUser.DateOfBirth > DateTime.Today.AddYears(-userSettings.MaxAge - 1));
         }
     }
 }

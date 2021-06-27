@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Helpers;
 using Microsoft.AspNetCore.Http;
 
 namespace API.Interfaces.Repositories
@@ -14,13 +14,15 @@ namespace API.Interfaces.Repositories
 
         Task<bool> SaveAllAsync();
 
+        Task<AppUser> GetUserByIdAsync(int id);
+
         Task<AppUser> GetUserByUsernameAsync(string username);
 
         Task<MemberDto> GetMemberDtoByUsernameAsync(string username);
 
         Task<MemberDto> GetMemberDtoByIdAsync(int id);
 
-        Task<IEnumerable<MemberDto>> GetMemberDtosAsync();
+        Task<PagedList<MemberDto>> GetMemberDtosAsync(UserSettings userSettings);
 
         Task<bool> UpdateUserByUsernameAsync(string username, MemberUpdateDto memberUpdateDto);
 

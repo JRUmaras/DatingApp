@@ -1,5 +1,16 @@
+<div class="text-center mt-3">
+    <h2>Your matches - {{ numberOfMatches }} found</h2>
+</div>
+
+<app-members-filter (onApplyFilter)="loadMembers()" (onResetFilter)="resetFilters()" [(userParams)]="this.userParams"></app-members-filter>
+
+<div class="d-flex justify-content-left">
+    <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [itemsPerPage]="pagination.pageSize" [(ngModel)]="pagination.pageNumber" (pageChanged)="pageChanged($event)" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
+</div>
+
 <div class="row">
-    <div class="col-2" *ngFor="let member of members$ | async">
+    <div class="col-2" *ngFor="let member of members">
         <app-member-card [member]="member"></app-member-card>
     </div>
 </div>
+

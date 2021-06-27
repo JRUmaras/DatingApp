@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 
-import { Member } from 'src/app/_models/member';
+import { IMember } from 'src/app/_models/member';
 import { User } from 'src/app/_models/user';
 
 import { AccountService } from 'src/app/_services/account.service';
@@ -24,7 +24,7 @@ export class MemberEditComponent implements OnInit {
         }
     }
 
-    member: Member;
+    member: IMember;
     user: User;
 
     get stateUnsaved() : boolean {

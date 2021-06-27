@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.DTOs;
-using API.Entities;
-using API.Errors.Data.Repositories;
 using API.Extensions;
-using API.Interfaces;
+using API.Helpers;
 using API.Interfaces.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -29,11 +24,20 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery]UserSettings userSettings)
         {
-            var users = await _userRepository.GetMemberDtosAsync();
+            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+            userSettings.CurrentUsername = user.UserName;
+            if (string.IsNullOrEmpty(userSettings.Gender))
+            {
+                userSettings.Gender = user.Gender == "male" ? "female" : "male";
+            }
 
-            return Ok(users);
+            var usersPage = await _userRepository.GetMemberDtosAsync(userSettings);
+
+            Response.AddPaginationHeader(usersPage.PageNumber, usersPage.PageSize, usersPage.TotalCount, usersPage.TotalPages);
+
+            return Ok(usersPage);
         }
 
         [HttpGet("id/{id}")]
