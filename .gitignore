@@ -450,3 +450,4 @@ datingapp.db
 API/Data/Migrations/*
 
 ssl
+*.DotSettings
