@@ -76,13 +76,22 @@ namespace API.Helpers
         private static void CreateAppUserToLikeDtoMap(IProfileExpression profile)
         {
             profile.CreateMap<AppUser, LikeDto>()
+                .ForMember(likeDto => likeDto.Username, opt =>
+                {
+                    opt.MapFrom(appUser => appUser.UserName);
+                })
                 .ForMember(likeDto => likeDto.Age, opt =>
                 {
                     opt.MapFrom(appUser => appUser.DateOfBirth.CalculateAge(DateTime.Today));
                 })
                 .ForMember(likeDto => likeDto.PhotoUrl, opt =>
                 {
-                    opt.MapFrom((appUser, _) => appUser.Photos?.FirstOrDefault(photo => photo.IsMain)?.Url ?? "");
+                    opt.MapFrom(appUser => 
+                        appUser.Photos != null 
+                            ? appUser.Photos.FirstOrDefault(photo => photo.IsMain) != null 
+                                ? appUser.Photos.First(photo => photo.IsMain).Url
+                                : ""
+                            : "");
                 });
         }
 
