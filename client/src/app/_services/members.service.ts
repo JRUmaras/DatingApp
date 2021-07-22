@@ -114,7 +114,7 @@ export class MembersService {
     }
 
     getLikes(predicate: string) {
-        return this.http.post(`${this.baseUrl}likes?predicate=${predicate}`, {});
+        return this.http.get<Partial<IMember[]>>(`${this.baseUrl}likes?predicate=${predicate}`);
     }
 
     private appendPaginationParams(params: HttpParams, pageNumber: number, pageSize: number): HttpParams {
