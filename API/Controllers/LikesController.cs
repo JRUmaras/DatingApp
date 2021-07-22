@@ -4,7 +4,6 @@ using API.DTOs;
 using API.Entities;
 using API.Extensions;
 using API.Interfaces.Repositories;
-using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

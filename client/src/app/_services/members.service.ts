@@ -109,6 +109,14 @@ export class MembersService {
         return this.http.delete(`${this.baseUrl}users/delete-photo/${photo.id}`);
     }
 
+    addLike(username: string) {
+        return this.http.post(`${this.baseUrl}likes/${username}`, {});
+    }
+
+    getLikes(predicate: string) {
+        return this.http.post(`${this.baseUrl}likes?predicate=${predicate}`, {});
+    }
+
     private appendPaginationParams(params: HttpParams, pageNumber: number, pageSize: number): HttpParams {
         params = params.append('pageNumber', pageNumber.toString());
         params = params.append('pageSize', pageSize.toString());
