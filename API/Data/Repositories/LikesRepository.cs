@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces.Repositories;
 using API.Services;
 using AutoMapper;
@@ -36,31 +37,32 @@ namespace API.Data.Repositories
                 .FirstOrDefaultAsync(user => user.Id == userId);
         }
 
-        public async Task<IEnumerable<LikeDto>> GetUserLikes(string predicate, int userId)
+        public async Task<PagedList<LikeDto>> GetUserLikes(LikesSettings likesSettings)
         {
             IQueryable<AppUser> users;
             var likes = _context.Likes.AsQueryable();
 
-            switch (predicate)
+            switch (likesSettings.Predicate)
             {
                 case StringService.LikeRelationship.Likes:
-                    likes = likes.Where(like => like.LikerId == userId);
+                    likes = likes.Where(like => like.LikerId == likesSettings.UserId);
                     users = likes.Select(like => like.Likee);
                     break;
 
                 case StringService.LikeRelationship.LikedBy:
-                    likes = likes.Where(like => like.LikeeId == userId);
+                    likes = likes.Where(like => like.LikeeId == likesSettings.UserId);
                     users = likes.Select(like => like.Liker);
                     break;
 
                 default:
-                    throw new Exception($"Unknown type of like: {predicate}");
+                    throw new Exception($"Unknown type of like: {likesSettings.Predicate}");
             }
 
-            return await users
+            var likeDtos = users
                 .OrderBy(user => user.UserName)
-                .ProjectTo<LikeDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .ProjectTo<LikeDto>(_mapper.ConfigurationProvider);
+
+            return await PagedList<LikeDto>.CreateAsync(likeDtos, likesSettings.PageNumber, likesSettings.PageSize);
         }
     }
 }
