@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 
 import { IMember } from 'src/app/_models/member';
-import { User } from 'src/app/_models/user';
+import { IUser } from 'src/app/_models/user';
 
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
@@ -25,7 +25,7 @@ export class MemberEditComponent implements OnInit {
     }
 
     member: IMember;
-    user: User;
+    user: IUser;
 
     get stateUnsaved() : boolean {
         return this.editForm?.dirty ?? false;

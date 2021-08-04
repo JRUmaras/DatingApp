@@ -1,5 +1,6 @@
+import { constStrings } from "../_helpers/constants";
 import { IUserParams } from "../_interfaces/IUserParams";
-import { User } from "./user";
+import { IUser } from "./user";
 
 export class UserParams implements IUserParams {
     gender: string;
@@ -8,8 +9,9 @@ export class UserParams implements IUserParams {
     pageNumber = 1;
     pageSize = 5;
     orderBy = 'lastActive';
+    likesPredicate = constStrings.likePredicates.liked;
 
-    constructor(user: User) {
+    constructor(user: IUser) {
         this.gender = user.gender === 'female' ? 'male' : 'female';
     }
 }

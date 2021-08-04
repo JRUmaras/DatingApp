@@ -3,7 +3,7 @@ import { FileUploader } from 'ng2-file-upload';
 import { take } from 'rxjs/operators';
 
 import { IMember } from 'src/app/_models/member';
-import { User } from 'src/app/_models/user';
+import { IUser } from 'src/app/_models/user';
 import { Photo } from 'src/app/_models/photo';
 import { AccountService } from 'src/app/_services/account.service';
 import { environment } from 'src/environments/environment';
@@ -22,7 +22,7 @@ export class PhotoEditorComponent implements OnInit {
     hasBaseDropzoneOver = false;
     baseUrl = environment.apiUrl;
 
-    user: User;
+    user: IUser;
 
     get uploadQueueIsEmpty() : boolean {
         return this.uploader?.queue?.length === 0 ?? false;

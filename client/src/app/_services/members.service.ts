@@ -7,12 +7,13 @@ import { environment } from 'src/environments/environment';
 
 import { IMember } from '../_models/member';
 import { MembersCache } from '../_helpers/members-cache';
-import { IPagination, PaginatedItems } from '../_helpers/pagination';
+import { PaginatedItems } from '../_helpers/pagination';
 import { Photo } from '../_models/photo';
 import { UserParams } from '../_models/userParams';
 import { PaginatedMembersCache } from '../_helpers/paginated-members-cache';
 import { AccountService } from './account.service';
-import { User } from '../_models/user';
+import { IUser } from '../_models/user';
+import { IUserParams } from '../_interfaces/IUserParams';
 
 @Injectable({
     providedIn: 'root'
@@ -21,8 +22,8 @@ export class MembersService {
 
     baseUrl = environment.apiUrl;
 
-    private user: User;
-    private _userParams: UserParams;
+    private user: IUser;
+    private _userParams: IUserParams;
 
     readonly membersCache: MembersCache = new MembersCache();
     readonly paginatedMembersCache: PaginatedMembersCache = new PaginatedMembersCache();
@@ -79,12 +80,6 @@ export class MembersService {
         let member = this.paginatedMembersCache.getByUsername(username);
         if (member !== null) return of(member);
 
-        // if (this.membersCache.hasValidValues) 
-        // {
-        //     const member = this.membersCache.getByUsername(username);
-        //     if (member !== undefined) return of(member);
-        // }
-
         return this.http.get<IMember>(this.baseUrl + 'users/' + username)
             .pipe(map((member: IMember) => {
                 return member;
@@ -92,7 +87,6 @@ export class MembersService {
     }
 
     updateMember(member: IMember): Observable<object> {
-        // this.membersCache.save(member);
         this.paginatedMembersCache.save([member]);
 
         return this.http.put(this.baseUrl + 'users', member);
@@ -104,7 +98,6 @@ export class MembersService {
     }
 
     deletePhoto(photo: Photo): Observable<object> {
-        //this.accountService.currentUser$.pipe(take(1)).subscribe(user => user.)
         this.paginatedMembersCache.invalidate();
         return this.http.delete(`${this.baseUrl}users/delete-photo/${photo.id}`);
     }
@@ -113,8 +106,11 @@ export class MembersService {
         return this.http.post(`${this.baseUrl}likes/${username}`, {});
     }
 
-    getLikes(predicate: string) {
-        return this.http.get<Partial<IMember[]>>(`${this.baseUrl}likes?predicate=${predicate}`);
+    getLikes(userParams: UserParams) {
+        let params = this.appendPaginationParams(new HttpParams(), userParams.pageNumber, userParams.pageSize);
+        params = params.append('predicate', userParams.likesPredicate);
+
+        return this.getPaginatedResult<Partial<IMember[]>>(`${this.baseUrl}likes`, params);
     }
 
     private appendPaginationParams(params: HttpParams, pageNumber: number, pageSize: number): HttpParams {
