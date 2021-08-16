@@ -11,5 +11,12 @@ namespace API.Services
             "female",
             "other"
         };
+
+        public static class LikeRelationship
+        {
+            public const string Likes = "likes";
+
+            public const string LikedBy = "likedBy";
+        }
     }
 }

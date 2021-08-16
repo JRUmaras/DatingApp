@@ -5,4 +5,5 @@ export interface IUserParams {
     pageNumber: number;
     pageSize: number;
     orderBy: string;
+    likesPredicate: string;
 }

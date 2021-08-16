@@ -4,7 +4,7 @@ import { ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators'
 import { environment } from 'src/environments/environment';
 
-import { User } from '../_models/user';
+import { IUser } from '../_models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +12,14 @@ import { User } from '../_models/user';
 export class AccountService {
   baseUrl = environment.apiUrl;
 
-  private currentUserSource = new ReplaySubject<User>(1);
+  private currentUserSource = new ReplaySubject<IUser>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private httpClient: HttpClient) { }
 
   login(model: any){
     return this.httpClient.post(this.baseUrl + 'account/login', model).pipe(
-      map((response: User) => {
+      map((response: IUser) => {
         const user  = response;
         this.updateCurrentUser(user);
       })
@@ -31,20 +31,20 @@ export class AccountService {
     this.currentUserSource.next(null);
   }
 
-  setCurrentUser(user: User) {
+  setCurrentUser(user: IUser) {
     this.updateCurrentUser(user);
   }
 
   register(model: any) {
     return this.httpClient.post(this.baseUrl + 'account/register', model).pipe(
-      map((user: User) => {
+      map((user: IUser) => {
         this.updateCurrentUser(user);
         return user;
       })
     );
   }
 
-  private updateCurrentUser(user: User) {
+  private updateCurrentUser(user: IUser) {
     if (user) {
       localStorage.setItem('user', JSON.stringify(user));
       this.currentUserSource.next(user);

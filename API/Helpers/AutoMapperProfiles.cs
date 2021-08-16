@@ -19,6 +19,7 @@ namespace API.Helpers
             CreateAppUserToMemberDtoMap(this);
             CreatePhotoToPhotoDtoMap(this);
             CreateAppUserToUserDtoMap(this);
+            CreateAppUserToLikeDtoMap(this);
         }
 
         #region DTO->Entities
@@ -69,6 +70,28 @@ namespace API.Helpers
                 .ForMember(userDto => userDto.PhotoUrl, opt =>
                 {
                     opt.MapFrom((appUser, _) => appUser.Photos?.FirstOrDefault(photo => photo.IsMain)?.Url ?? "");
+                });
+        }
+
+        private static void CreateAppUserToLikeDtoMap(IProfileExpression profile)
+        {
+            profile.CreateMap<AppUser, LikeDto>()
+                .ForMember(likeDto => likeDto.Username, opt =>
+                {
+                    opt.MapFrom(appUser => appUser.UserName);
+                })
+                .ForMember(likeDto => likeDto.Age, opt =>
+                {
+                    opt.MapFrom(appUser => appUser.DateOfBirth.CalculateAge(DateTime.Today));
+                })
+                .ForMember(likeDto => likeDto.PhotoUrl, opt =>
+                {
+                    opt.MapFrom(appUser => 
+                        appUser.Photos != null 
+                            ? appUser.Photos.FirstOrDefault(photo => photo.IsMain) != null 
+                                ? appUser.Photos.First(photo => photo.IsMain).Url
+                                : ""
+                            : "");
                 });
         }
 
